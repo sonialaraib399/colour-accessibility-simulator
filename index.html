@@ -7,50 +7,56 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     html {
       scroll-behavior: smooth;
     }
 
-    /* Simulator canvas styles */
+    /* Canvas styling */
     #canvas {
       width: 100%;
       max-width: 800px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
       display: block;
       margin: 0 auto;
     }
 
-    .color-box {
-      width: 40px;
-      height: 40px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      display: inline-block;
-      cursor: pointer;
-      margin: 5px;
+    @media (max-width: 640px) {
+      h1, h2, h3 {
+        font-size: 1.25rem !important;
+      }
+
+      #canvas {
+        max-width: 100%;
+      }
+
+      select, input[type="file"], button {
+        width: 100%;
+        margin-top: 8px;
+      }
     }
   </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 font-sans">
 
   <!-- Header -->
   <header class="bg-white shadow-sm fixed top-0 left-0 w-full z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-2xl font-bold text-indigo-600">Colour Accessibility Simulator</h1>
-      <nav>
-        <a href="#simulator" class="text-gray-700 hover:text-indigo-600 mx-3">Simulator</a>
-        <a href="#about" class="text-gray-700 hover:text-indigo-600 mx-3">About</a>
+    <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center p-4">
+      <h1 class="text-xl sm:text-2xl font-bold text-indigo-600">Colour Accessibility Simulator</h1>
+      <nav class="mt-2 sm:mt-0">
+        <a href="#simulator" class="text-gray-700 hover:text-indigo-600 mx-2">Simulator</a>
+        <a href="#about" class="text-gray-700 hover:text-indigo-600 mx-2">About</a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="pt-32 pb-20 text-center bg-gradient-to-br from-indigo-50 to-white">
-    <div class="max-w-3xl mx-auto">
-      <h2 class="text-4xl font-bold mb-6 text-gray-900">
+  <!-- Hero Section -->
+  <section class="pt-28 pb-16 text-center bg-gradient-to-br from-indigo-50 to-white">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-gray-900">
         See How Your Colours Appear Across Different Vision Impairments
       </h2>
       <p class="text-lg text-gray-600 mb-8">
@@ -64,35 +70,39 @@
 
   <!-- Simulator Section -->
   <section id="simulator" class="py-20 bg-white">
-    <div class="max-w-5xl mx-auto text-center">
+    <div class="max-w-5xl mx-auto text-center px-4">
       <h3 class="text-3xl font-semibold mb-8 text-gray-900">Interactive Simulator</h3>
       <p class="text-gray-600 mb-10">
         Upload an image or pick colours to see how they appear for different vision types.
       </p>
 
-      <!-- Image upload -->
+      <!-- Image Upload -->
       <div class="mb-8">
         <input type="file" id="upload" accept="image/*"
-          class="mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full
-                 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+          class="mx-auto block text-sm text-gray-500 
+                 file:mr-4 file:py-2 file:px-4 file:rounded-full
+                 file:border-0 file:text-sm file:font-semibold 
+                 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
       </div>
 
-      <!-- Colour palette -->
-      <div class="mb-8 flex justify-center flex-wrap">
-        <input type="color" id="colorPicker" value="#0044cc" class="mx-2">
-        <input type="color" id="colorPicker2" value="#ffcc00" class="mx-2">
-        <button id="applyColors" class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700">Apply</button>
+      <!-- Colour Pickers -->
+      <div class="mb-8 flex flex-wrap justify-center gap-4">
+        <input type="color" id="colorPicker" value="#0044cc" class="w-12 h-12 cursor-pointer border rounded-lg">
+        <input type="color" id="colorPicker2" value="#ffcc00" class="w-12 h-12 cursor-pointer border rounded-lg">
+        <button id="applyColors" class="bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition">
+          Apply Colours
+        </button>
       </div>
 
-      <!-- Vision type selector -->
+      <!-- Vision Type Selector -->
       <div class="mb-6">
-        <label for="mode" class="font-semibold">Choose Vision Type:</label>
-        <select id="mode" class="ml-2 p-2 border rounded">
+        <label for="mode" class="font-semibold text-gray-700">Choose Vision Type:</label>
+        <select id="mode" class="ml-2 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400">
           <option value="normal">Normal Vision</option>
-          <option value="protanopia">Protanopia</option>
-          <option value="deuteranopia">Deuteranopia</option>
-          <option value="tritanopia">Tritanopia</option>
-          <option value="achromatopsia">Achromatopsia</option>
+          <option value="protanopia">Protanopia (Red-Green)</option>
+          <option value="deuteranopia">Deuteranopia (Red-Green)</option>
+          <option value="tritanopia">Tritanopia (Blue-Yellow)</option>
+          <option value="achromatopsia">Achromatopsia (Monochrome)</option>
         </select>
       </div>
 
@@ -101,13 +111,14 @@
     </div>
   </section>
 
-  <!-- About -->
+  <!-- About Section -->
   <section id="about" class="py-20 bg-gray-100">
-    <div class="max-w-4xl mx-auto text-center">
+    <div class="max-w-4xl mx-auto text-center px-4">
       <h3 class="text-3xl font-semibold mb-6 text-gray-900">About This Tool</h3>
       <p class="text-gray-600 leading-relaxed max-w-2xl mx-auto">
-        The Colour Accessibility Simulator helps designers, developers, and product teams test visual accessibility
-        by previewing how colour choices appear to users with various forms of colour blindness.
+        The Colour Accessibility Simulator helps designers, developers, and teams test colour accessibility 
+        by previewing how colours look under different types of colour vision deficiency.
+        This promotes inclusive, accessible design for everyone.
       </p>
     </div>
   </section>
@@ -119,33 +130,34 @@
     </p>
   </footer>
 
-  <!-- JS: Colour Simulation -->
+  <!-- JavaScript -->
   <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const upload = document.getElementById("upload");
     const mode = document.getElementById("mode");
-
     let image = new Image();
     let imgDataOriginal;
 
-    // Load image
-    upload.addEventListener("change", function (e) {
+    // Upload image
+    upload.addEventListener("change", (e) => {
       const file = e.target.files[0];
       const reader = new FileReader();
-      reader.onload = function (event) {
-        image.onload = function () {
-          canvas.width = image.width;
-          canvas.height = image.height;
-          ctx.drawImage(image, 0, 0);
-          imgDataOriginal = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      reader.onload = (event) => {
+        image.onload = () => {
+          const scale = Math.min(canvas.width / image.width, canvas.height / image.height);
+          const w = image.width * scale;
+          const h = image.height * scale;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(image, 0, 0, w, h);
+          imgDataOriginal = ctx.getImageData(0, 0, w, h);
         };
         image.src = event.target.result;
       };
       reader.readAsDataURL(file);
     });
 
-    // Simulate filters
+    // Colour filter logic
     mode.addEventListener("change", applyFilter);
 
     function applyFilter() {
@@ -159,7 +171,7 @@
 
       const d = imgData.data;
       for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i + 1], b = d[i + 2];
+        let [r, g, b] = [d[i], d[i + 1], d[i + 2]];
         let nr = r, ng = g, nb = b;
 
         switch (mode.value) {
@@ -175,7 +187,7 @@
       ctx.putImageData(imgData, 0, 0);
     }
 
-    // Color box example
+    // Gradient simulation
     const colorPicker = document.getElementById("colorPicker");
     const colorPicker2 = document.getElementById("colorPicker2");
     const applyColors = document.getElementById("applyColors");
@@ -189,6 +201,5 @@
       imgDataOriginal = ctx.getImageData(0, 0, canvas.width, canvas.height);
     });
   </script>
-
 </body>
 </html>
