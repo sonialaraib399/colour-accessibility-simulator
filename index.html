@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colour Accessibility Simulator</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Simulator canvas styles */
+    #canvas {
+      width: 100%;
+      max-width: 800px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .color-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      cursor: pointer;
+      margin: 5px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm fixed top-0 left-0 w-full z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+      <h1 class="text-2xl font-bold text-indigo-600">Colour Accessibility Simulator</h1>
+      <nav>
+        <a href="#simulator" class="text-gray-700 hover:text-indigo-600 mx-3">Simulator</a>
+        <a href="#about" class="text-gray-700 hover:text-indigo-600 mx-3">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-20 text-center bg-gradient-to-br from-indigo-50 to-white">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-4xl font-bold mb-6 text-gray-900">
+        See How Your Colours Appear Across Different Vision Impairments
+      </h2>
+      <p class="text-lg text-gray-600 mb-8">
+        Test your colour palettes for accessibility. Simulate how people with colour blindness perceive your designs.
+      </p>
+      <a href="#simulator" class="px-6 py-3 bg-indigo-600 text-white rounded-full text-lg hover:bg-indigo-700 transition">
+        Try the Simulator
+      </a>
+    </div>
+  </section>
+
+  <!-- Simulator Section -->
+  <section id="simulator" class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto text-center">
+      <h3 class="text-3xl font-semibold mb-8 text-gray-900">Interactive Simulator</h3>
+      <p class="text-gray-600 mb-10">
+        Upload an image or pick colours to see how they appear for different vision types.
+      </p>
+
+      <!-- Image upload -->
+      <div class="mb-8">
+        <input type="file" id="upload" accept="image/*"
+          class="mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full
+                 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+      </div>
+
+      <!-- Colour palette -->
+      <div class="mb-8 flex justify-center flex-wrap">
+        <input type="color" id="colorPicker" value="#0044cc" class="mx-2">
+        <input type="color" id="colorPicker2" value="#ffcc00" class="mx-2">
+        <button id="applyColors" class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700">Apply</button>
+      </div>
+
+      <!-- Vision type selector -->
+      <div class="mb-6">
+        <label for="mode" class="font-semibold">Choose Vision Type:</label>
+        <select id="mode" class="ml-2 p-2 border rounded">
+          <option value="normal">Normal Vision</option>
+          <option value="protanopia">Protanopia</option>
+          <option value="deuteranopia">Deuteranopia</option>
+          <option value="tritanopia">Tritanopia</option>
+          <option value="achromatopsia">Achromatopsia</option>
+        </select>
+      </div>
+
+      <!-- Canvas -->
+      <canvas id="canvas" width="800" height="500"></canvas>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-20 bg-gray-100">
+    <div class="max-w-4xl mx-auto text-center">
+      <h3 class="text-3xl font-semibold mb-6 text-gray-900">About This Tool</h3>
+      <p class="text-gray-600 leading-relaxed max-w-2xl mx-auto">
+        The Colour Accessibility Simulator helps designers, developers, and product teams test visual accessibility
+        by previewing how colour choices appear to users with various forms of colour blindness.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t text-center py-6">
+    <p class="text-gray-500 text-sm">
+      © 2025 Colour Accessibility Simulator — Made with ❤️ for Inclusive Design
+    </p>
+  </footer>
+
+  <!-- JS: Colour Simulation -->
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const upload = document.getElementById("upload");
+    const mode = document.getElementById("mode");
+
+    let image = new Image();
+    let imgDataOriginal;
+
+    // Load image
+    upload.addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        image.onload = function () {
+          canvas.width = image.width;
+          canvas.height = image.height;
+          ctx.drawImage(image, 0, 0);
+          imgDataOriginal = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        };
+        image.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Simulate filters
+    mode.addEventListener("change", applyFilter);
+
+    function applyFilter() {
+      if (!imgDataOriginal) return;
+
+      const imgData = new ImageData(
+        new Uint8ClampedArray(imgDataOriginal.data),
+        imgDataOriginal.width,
+        imgDataOriginal.height
+      );
+
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        let nr = r, ng = g, nb = b;
+
+        switch (mode.value) {
+          case "protanopia": nr = 0.567 * r + 0.433 * g; ng = 0.558 * r + 0.442 * g; nb = 0; break;
+          case "deuteranopia": nr = 0.625 * r + 0.375 * g; ng = 0.7 * r + 0.3 * g; nb = 0; break;
+          case "tritanopia": nr = 0.95 * r + 0.05 * g; ng = 0; nb = 0.433 * g + 0.567 * b; break;
+          case "achromatopsia": const gray = (r + g + b) / 3; nr = ng = nb = gray; break;
+        }
+
+        d[i] = nr; d[i + 1] = ng; d[i + 2] = nb;
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // Color box example
+    const colorPicker = document.getElementById("colorPicker");
+    const colorPicker2 = document.getElementById("colorPicker2");
+    const applyColors = document.getElementById("applyColors");
+
+    applyColors.addEventListener("click", () => {
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, colorPicker.value);
+      gradient.addColorStop(1, colorPicker2.value);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      imgDataOriginal = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    });
+  </script>
+
+</body>
+</html>
